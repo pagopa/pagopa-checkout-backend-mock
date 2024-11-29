@@ -6,7 +6,7 @@ node_cache_key: &node_cache_key v1-dependencies-{{ checksum "yarn.lock" }}
 defaults_js: &defaults_js
   <<: *defaults
   docker:
-    - image: circleci/node:10.14.1
+    - image: circleci/node:10.14.1@sha256:0c1cbe6e97abda4edced99066a3cd9328f8fcc482503ac3a3fe5effb25f3c3ba
 
 restore_node_cache: &restore_node_cache
   restore_cache:

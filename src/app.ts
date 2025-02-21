@@ -37,6 +37,8 @@ import {
   ecommerceGetPaymentMethods,
   retrieveCardDataFromNpg
 } from "./handlers/ecommerce/payment-method";
+import { checkoutAuthServiceLogin } from "./handlers/checkout-auth-service";
+import { checkoutFeatureFlag } from "./handlers/checkout-feature-flags";
 
 // eslint-disable-next-line max-lines-per-function
 export const newExpressApp: () => Promise<Express.Application> = async () => {
@@ -149,41 +151,6 @@ export const newExpressApp: () => Promise<Express.Application> = async () => {
 
   router.put("/pp-restapi/v4/wallet/:id", updateWalletHandler);
 
-  // app.get(
-  //   "/checkout/payments/v1/payment-requests/:rptId",
-  //   async (req, res, _next) => {
-  //     try {
-  //       return await getPaymentInfoHandler(ID_PAYMENT)(req, res);
-  //     } catch (e) {
-  //       logger.error("Got error while executing request handler:");
-  //       logger.error(e);
-  //       return ResponseErrorInternal("").apply(res);
-  //     }
-  //   }
-  // );
-
-  // app.post(
-  //   "/checkout/payments/v1/payment-activations",
-  //   toExpressHandler(activatePaymentHandler())
-  // );
-
-  // app.get(
-  //   "/checkout/payments/v1/payment-activations/:codiceContestoPagamento",
-  //   toExpressHandler(checkPaymentStatusHandler(ID_PAYMENT))
-  // );
-
-  // app.use(
-  //   createProxyMiddleware("/checkout/payment-transactions", {
-  //     onProxyReq: (proxyReq, _req, _res) => {
-  // eslint-disable-next-line extra-rules/no-commented-out-code
-  //       proxyReq.setHeader("X-Forwarded-For", "127.0.0.1");
-  //     },
-  //     pathRewrite: {
-  //       "^/checkout/payment-transactions": "/api"
-  //     },
-  //     target: `http://${process.env.PAGOPA_FUNCTIONS_CHECKOUT_HOST}:${process.env.PAGOPA_FUNCTIONS_CHECKOUT_PORT}`
-  //   })
-  // );
   app.get(
     "/checkout/payment-transactions/v1/browsers/current/info",
     async (_req, res) => {
@@ -260,6 +227,12 @@ export const newExpressApp: () => Promise<Express.Application> = async () => {
     "/ecommerce/checkout/v1/transactions/:transactionId/auth-requests",
     ecommerceAuthRequest
   );
+
+  // checkout-auth-service login mock
+  app.get("/checkout/auth-service/v1/auth/login", checkoutAuthServiceLogin);
+
+  // checkout feature flags mock
+  app.get("/checkout/feature-flags/v1/features/values", checkoutFeatureFlag);
 
   return app;
 };
